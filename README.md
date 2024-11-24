@@ -46,8 +46,8 @@ Once the installation is complete, start the frontend app:
 
 ```bash
 npm run dev
-This will start the frontend app on http://localhost:3000.
 ```
+This will start the frontend app on http://localhost:3000.
 
 ### 3. Setup Backend (ASP.NET C#)
 
@@ -62,8 +62,8 @@ To run the backend server:
 
 ```bash
 dotnet run
-This will start the backend API on http://localhost:5132.
 ```
+This will start the backend API on http://localhost:5132.
 
 ### 4. Run the Application
 After starting both the frontend and backend servers, navigate to http://localhost:3000 in your browser. You should see the React app with the dropdown and table displaying currency exchange rates.

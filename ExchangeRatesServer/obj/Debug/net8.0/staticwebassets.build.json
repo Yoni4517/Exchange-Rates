@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "pU4rh8pIIdMi0axBtR2V2Kdw1fZAH8KWxI2nL88XhGg=",
+  "Source": "ExchangeRatesServer",
+  "BasePath": "_content/ExchangeRatesServer",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

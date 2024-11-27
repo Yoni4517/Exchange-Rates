@@ -93,6 +93,18 @@
           }
         }
       }
+    },
+    "/api/ExchangeRates": {
+      "get": {
+        "tags": [
+          "ExchangeRates"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": { }

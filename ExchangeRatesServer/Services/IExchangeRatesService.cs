@@ -2,6 +2,6 @@
 
 public interface IExchangeRatesService
 {
-    Task<List<string>> GetAvailableCurrenciesAsync();
-    Task<Dictionary<string, double>> GetExchangeRatesForCurrencyAsync(string currencyName);
+    Task<List<string>?> GetAvailableCurrencies();
+    Task<Dictionary<string, double>?> GetExchangeRatesForCurrency(string currencyName);
 }

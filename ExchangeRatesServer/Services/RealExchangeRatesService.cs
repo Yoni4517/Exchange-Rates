@@ -1,10 +1,12 @@
-﻿using System.Text.Json;
+﻿using Microsoft.Extensions.Configuration;
+using System.Text.Json;
 namespace ExchangeRatesServer.Services;
 public class RealExchangeRatesService : IExchangeRatesService
 {
     private readonly HttpClient _httpClient;
+    private readonly string _apiKey;
 
-    public RealExchangeRatesService(HttpClient httpClient)
+    public RealExchangeRatesService(HttpClient httpClient, IConfiguration configuration)
     {
         var handler = new HttpClientHandler()
         {
@@ -12,12 +14,23 @@ public class RealExchangeRatesService : IExchangeRatesService
         };
 
         _httpClient = new HttpClient(handler);
+        _apiKey = configuration.GetValue<string>("ExchangeRatesApi:ApiKey");
     }
 
-    public async Task<List<string>> GetAvailableCurrenciesAsync()
+    private static readonly List<string> PopularCurrencies = new List<string>
     {
-        var url = "https://api.exchangeratesapi.io/v1/latest?access_key=9cef343033266bae9948c65a58955d1b";
+        "USD",
+        "EUR",
+        "GBP",
+        "CNY",
+        "ILS"
+    };
+
+    public async Task<List<string>?> GetAvailableCurrencies()
+    {
+        var url = $"https://v6.exchangerate-api.com/v6/{_apiKey}/latest/EUR";
         var response = await _httpClient.GetAsync(url);
+
 
         if (!response.IsSuccessStatusCode)
         {
@@ -27,14 +40,28 @@ public class RealExchangeRatesService : IExchangeRatesService
         }
 
         var content = await response.Content.ReadAsStringAsync();
-        var data = JsonSerializer.Deserialize<SymbolsResponse>(content);
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        var data = JsonSerializer.Deserialize<ExchangeRatesResponse>(content, options);
 
-        return data?.Symbols != null ? new List<string>(data.Symbols.Keys) : null;
+        if (data?.Conversion_Rates != null)
+        {
+            var filteredCurrencies = data.Conversion_Rates.Keys
+                .Where(currency => PopularCurrencies.Contains(currency))
+                .ToList();
+
+            return filteredCurrencies;
+        }
+
+        return null;
     }
 
-    public async Task<Dictionary<string, double>> GetExchangeRatesForCurrencyAsync(string currencyName)
+
+    public async Task<Dictionary<string, double>?> GetExchangeRatesForCurrency(string currencyName)
     {
-        var url = $"https://v6.exchangerate-api.com/v6/805a029d961b82554f6533c3/latest/{currencyName}";
+        var url = $"https://v6.exchangerate-api.com/v6/{_apiKey}/latest/{currencyName}";
         var response = await _httpClient.GetAsync(url);
 
         if (!response.IsSuccessStatusCode)
@@ -45,42 +72,40 @@ public class RealExchangeRatesService : IExchangeRatesService
         }
 
         var content = await response.Content.ReadAsStringAsync();
-        Console.WriteLine($"Response Content: {content}");
 
-        var data = JsonSerializer.Deserialize<ExchangeRatesResponse>(content);
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true  
+        };
 
-        if (data == null || data.ConversionRates == null)
+        var data = JsonSerializer.Deserialize<ExchangeRatesResponse>(content, options);
+
+        if (data == null || data.Conversion_Rates == null)
         {
             Console.WriteLine("No conversion rates data found.");
             return null;
         }
-        var selectedCurrencies = new List<string> { "USD", "EUR", "GBP", "CNY", "ILS" };
         var filteredRates = new Dictionary<string, double>();
 
-        foreach (var currency in selectedCurrencies)
+        foreach (var currency in PopularCurrencies)
         {
-            if (data.ConversionRates.ContainsKey(currency))
-            {
-                filteredRates[currency] = data.ConversionRates[currency];
-            }
+            if (data.Conversion_Rates.ContainsKey(currency))
+                filteredRates[currency] = data.Conversion_Rates[currency];
             else
-            {
                 Console.WriteLine($"Currency {currency} not found.");
-            }
+        }
+        if (filteredRates.ContainsKey(currencyName))
+        {
+            filteredRates.Remove(currencyName);
         }
 
         return filteredRates;
     }
 
-    public class SymbolsResponse
-    {
-        public string Result { get; set; }
-        public Dictionary<string, string> Symbols { get; set; }
-    }
-
     public class ExchangeRatesResponse
     {
-        public string Result { get; set; }
-        public Dictionary<string, double> ConversionRates { get; set; }
+        public bool Success { get; set; }
+        public Dictionary<string, double>? Conversion_Rates { get; set; }
     }
+
 }

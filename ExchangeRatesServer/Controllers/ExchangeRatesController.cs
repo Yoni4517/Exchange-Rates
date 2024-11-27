@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ExchangeRatesServer.Services;
+using System.Net;
 
 namespace ExchangeRatesServer.Controllers;
 
@@ -17,18 +18,51 @@ public class ExchangeRatesController : ControllerBase
     [HttpGet("currencies")]
     public async Task<ActionResult<List<string>>> GetAvailableCurrencies()
     {
-        var availableCurrencies = await _exchangeRatesService.GetAvailableCurrenciesAsync();
-        return Ok(availableCurrencies);
+        try
+        {
+            var availableCurrencies = await _exchangeRatesService.GetAvailableCurrencies();
+            if (availableCurrencies == null || !availableCurrencies.Any())
+            {
+                return NotFound("No currencies available.");
+            }
+
+            return Ok(availableCurrencies);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode((int)HttpStatusCode.InternalServerError, "An error occurred while fetching currencies.");
+        }
     }
 
     [HttpGet("currencies/{currencyName}")]
     public async Task<ActionResult<Dictionary<string, double>>> GetExchangeRatesForCurrency(string currencyName)
     {
-        var exchangeRates = await _exchangeRatesService.GetExchangeRatesForCurrencyAsync(currencyName);
-        if (exchangeRates == null)
+        if (string.IsNullOrWhiteSpace(currencyName))
         {
-            return NotFound($"Currency '{currencyName}' not found.");
+            return BadRequest("Currency name cannot be empty or null.");
         }
-        return Ok(exchangeRates);
+
+        try
+        {
+            var exchangeRates = await _exchangeRatesService.GetExchangeRatesForCurrency(currencyName);
+
+            if (exchangeRates == null || !exchangeRates.Any())
+            {
+                return NotFound($"Currency '{currencyName}' not found.");
+            }
+
+            return Ok(exchangeRates);
+        }
+
+        catch (Exception ex)
+        {
+            return StatusCode((int)HttpStatusCode.InternalServerError, "An error occurred while fetching exchange rates.");
+        }
+    }
+
+    [HttpGet]
+    public ActionResult HandleInvalidRoute()
+    {
+        return NotFound("The requested API path is invalid.");
     }
 }

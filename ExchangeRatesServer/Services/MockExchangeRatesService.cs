@@ -12,7 +12,7 @@ public class MockExchangeRatesService : IExchangeRatesService
 
     private static readonly Random RandomGenerator = new Random();
 
-    public async Task<List<string>> GetAvailableCurrenciesAsync()
+    public async Task<List<string>?> GetAvailableCurrencies()
     {
         int numberOfCurrencies = RandomGenerator.Next(3, 5);
 
@@ -21,7 +21,7 @@ public class MockExchangeRatesService : IExchangeRatesService
         return await Task.FromResult(randomCurrencies);
     }
 
-    public async Task<Dictionary<string, double>> GetExchangeRatesForCurrencyAsync(string currencyName)
+    public async Task<Dictionary<string, double>?> GetExchangeRatesForCurrency(string currencyName)
     {
         var exchangeRates = new Dictionary<string, double>();
 

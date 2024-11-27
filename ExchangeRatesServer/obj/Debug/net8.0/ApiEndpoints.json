@@ -1,6 +1,16 @@
 [
   {
     "ContainingType": "ExchangeRatesServer.Controllers.ExchangeRatesController",
+    "Method": "HandleInvalidRoute",
+    "RelativePath": "api/ExchangeRates",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ExchangeRatesServer.Controllers.ExchangeRatesController",
     "Method": "GetAvailableCurrencies",
     "RelativePath": "api/ExchangeRates/currencies",
     "HttpMethod": "GET",

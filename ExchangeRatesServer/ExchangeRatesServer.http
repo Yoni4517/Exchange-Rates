@@ -1,6 +1,6 @@
 @ExchangeRatesServer_HostAddress = http://localhost:5132
 
-GET {{ExchangeRatesServer_HostAddress}}/weatherforecast/
+GET {{ExchangeRatesServer_HostAddress}}/api/ExchangeRates/
 Accept: application/json
 
 ###

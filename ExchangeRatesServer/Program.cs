@@ -13,9 +13,9 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddScoped<IExchangeRatesService, MockExchangeRatesService>(); // שירות אמיתי
+        builder.Services.AddScoped<IExchangeRatesService, MockExchangeRatesService>(); 
 
-        builder.Services.AddHttpClient<MockExchangeRatesService>(); // רק אם אתה משתמש ב-HttpClient
+        builder.Services.AddHttpClient<MockExchangeRatesService>(); 
 
         builder.Services.AddCors(options =>
         {

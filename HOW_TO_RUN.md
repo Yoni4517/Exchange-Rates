@@ -1,17 +1,3 @@
-# Currency Exchange Rates App
-
-This project consists of a frontend React app (`exchangeRatesClient`) and a backend ASP.NET C# API (`exchangeRatesServer`) that provides currency exchange rate data. The frontend allows users to select a base currency and displays the exchange rates for other currencies in a table.
-
-## Features
-
-- **Frontend (React)**:
-  - A dropdown with the following currencies: USD, EUR, GBP, CNY, ILS.
-  - A table that displays the exchange rates for the selected base currency.
-  - The exchange rates are fetched from the backend API.
-
-- **Backend (ASP.NET C#)**:
-  - An API that returns a list of available currencies.
-  - An API that returns the exchange rates for a given base currency.
 
 ## Prerequisites
 

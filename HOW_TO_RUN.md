@@ -63,4 +63,5 @@ Folder Structure:
 /exchangeRates
   /exchangeRatesClient      # React frontend app
   /exchangeRatesServer      # ASP.NET C# backend API
-/README.md                 # This file
+/README.md              
+/HOW_TO_RUN.md             #This file
